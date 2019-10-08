@@ -14,7 +14,7 @@ let connectionString = 'mongodb://localhost:27017/TodoApp'
 
 mongodb.connect(connectionString, {useNewUrlParser: true, useUnifiedTopology: true}, function(err, client) {
   db = client.db()
-  
+
   app.listen(process.env.PORT || LOCAL_PORT, function () {
     console.log(`http://localhost:${LOCAL_PORT}`)
   })
@@ -52,8 +52,8 @@ db.collection('items').find().toArray(function(err, items) {
       return `<li class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
       <span class="item-text">${item.text}</span>
       <div>
-        <button data-id="${item._id}" class="edit-me btn btn-secondary btn-sm mr-1">Edit</button>
-        <button class="delete-me btn btn-danger btn-sm">Delete</button>
+        <button data-id="${item._id}" class="edit-me btn btn-secondary btn-sm mr-1">Editar</button>
+        <button data-id="${item._id}" class="delete-me btn btn-danger btn-sm">Borrar</button>
       </div>
     </li>`
     }).join('')}         
@@ -78,5 +78,11 @@ app.post('/create-item', function(req, res) {
 app.post('/update-item', function(req, res) {
   db.collection('items').findOneAndUpdate({_id: new mongodb.ObjectId(req.body.id)}, {$set: {text: req.body.text}}, function() {
     res.send("Success")
+  })
+})
+
+app.post('/delete-item', function(req, res){
+  db.collection('items').deleteOne({_id: new mongodb.ObjectId(req.body.id)} ,function(){
+    res.send("Exito")
   })
 })
