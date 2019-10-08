@@ -1,3 +1,27 @@
+function itemTemplate(item){
+  return `<li class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
+  <span class="item-text">${item.text}</span>
+  <div>
+    <button data-id="${item._id}" class="edit-me btn btn-secondary btn-sm mr-1">Editar</button>
+    <button data-id="${item._id}" class="delete-me btn btn-danger btn-sm">Borrar</button>
+  </div>
+</li>`
+}
+// Crear Feature 
+let createField = document.getElementById("create-field")
+
+document.getElementById("create-form").addEventListener("submit",function(e){
+  e.preventDefault()
+  axios.post('/create-item', {text: createField.value}).then(function (response) {
+    // Create HTML for new item
+    document.getElementById('item-list').insertAdjacentHTML('beforeend',itemTemplate(response.data))
+    createField.value = ""
+    createField.focus()
+  }).catch(function() {
+    console.log("Please try again later.")
+  })
+})
+
 document.addEventListener("click", function(e) {
   // Delete Item
   if (e.target.classList.contains("delete-me")) {
