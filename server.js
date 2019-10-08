@@ -3,6 +3,7 @@ let mongodb = require('mongodb')
 
 let app = express()
 let db
+app.use(express.static('public'))
 
 let connectionString = 'mongodb+srv://nacho:klingon@platzi-g8u7b.mongodb.net/TodoApp?retryWrites=true&w=majority'
 mongodb.connect(connectionString,{useNewUrlParser: true, useUnifiedTopology: true },function(err, client){
@@ -10,6 +11,7 @@ mongodb.connect(connectionString,{useNewUrlParser: true, useUnifiedTopology: tru
   app.listen(3000)
 })
 
+app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
 app.get('/', function(req,res){
@@ -50,6 +52,9 @@ db.collection('items').find().toArray(function(err, items){
     
   </div>
   
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="/browser.js"></script>
+
 </body>
 </html>`)
 })
@@ -62,4 +67,9 @@ app.post('/create-item', function(req,res){
   })
 
   // console.log(req.body.item) // localiza lo que se escribe en el elemento item del formulario
+})
+
+app.post('/update-item', function(req,res){
+  console.log(req.body.text)
+  res.send('Success')
 })
