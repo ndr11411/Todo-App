@@ -1,21 +1,31 @@
-let express = require ('express')
+let express = require('express')
 let mongodb = require('mongodb')
+
+var LOCAL_PORT = 3000
 
 let app = express()
 let db
+
 app.use(express.static('public'))
 
-let connectionString = 'mongodb+srv://nacho:klingon@platzi-g8u7b.mongodb.net/TodoApp?retryWrites=true&w=majority'
-mongodb.connect(connectionString,{useNewUrlParser: true, useUnifiedTopology: true },function(err, client){
+let connectionString = 'mongodb://localhost:27017/TodoApp'
+
+// let connectionString = 'mongodb+srv://nacho:klingon@platzi-g8u7b.mongodb.net/TodoApp?retryWrites=true&w=majority'
+
+mongodb.connect(connectionString, {useNewUrlParser: true, useUnifiedTopology: true}, function(err, client) {
   db = client.db()
-  app.listen(3000)
+  
+  app.listen(process.env.PORT || LOCAL_PORT, function () {
+    console.log(`http://localhost:${LOCAL_PORT}`)
+  })
+
 })
 
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
-app.get('/', function(req,res){
-db.collection('items').find().toArray(function(err, items){
+app.get('/', function(req, res) {
+db.collection('items').find().toArray(function(err, items) {
   res.send(`<!DOCTYPE html>
 <html>
 <head>
@@ -26,7 +36,7 @@ db.collection('items').find().toArray(function(err, items){
 </head>
 <body>
   <div class="container">
-    <h1 class="display-4 text-center py-1">To-Do App aaa</h1>
+    <h1 class="display-4 text-center py-1">To-Do App!</h1>
     
     <div class="jumbotron p-3 shadow-sm">
       <form action="/create-item" method="POST">
@@ -38,38 +48,35 @@ db.collection('items').find().toArray(function(err, items){
     </div>
     
     <ul class="list-group pb-5">
-    ${items.map(function(item){
-      return ` <li class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
+    ${items.map(function(item) {
+      return `<li class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
       <span class="item-text">${item.text}</span>
       <div>
-        <button class="edit-me btn btn-secondary btn-sm mr-1">Edit</button>
+        <button data-id="${item._id}" class="edit-me btn btn-secondary btn-sm mr-1">Edit</button>
         <button class="delete-me btn btn-danger btn-sm">Delete</button>
       </div>
     </li>`
-    }).join('')}  
-    
+    }).join('')}         
     </ul>
     
   </div>
   
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="/browser.js"></script>
-
 </body>
 </html>`)
 })
 })
 
-
-app.post('/create-item', function(req,res){
-  db.collection('items').insertOne({text: req.body.item}, function(){
+app.post('/create-item', function(req, res) {
+  db.collection('items').insertOne({text: req.body.item}, function() {
     res.redirect('/')
   })
-
   // console.log(req.body.item) // localiza lo que se escribe en el elemento item del formulario
 })
 
-app.post('/update-item', function(req,res){
-  console.log(req.body.text)
-  res.send('Success')
+app.post('/update-item', function(req, res) {
+  db.collection('items').findOneAndUpdate({_id: new mongodb.ObjectId(req.body.id)}, {$set: {text: req.body.text}}, function() {
+    res.send("Success")
+  })
 })
