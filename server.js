@@ -9,9 +9,9 @@ let db
 
 app.use(express.static('public'))
 
-let connectionString = 'mongodb://localhost:27017/TodoApp'
+// let connectionString = 'mongodb://localhost:27017/TodoApp'
 
-// let connectionString = 'mongodb+srv://nacho:klingon@platzi-g8u7b.mongodb.net/TodoApp?retryWrites=true&w=majority'
+let connectionString = 'mongodb+srv://nacho:klingon@platzi-g8u7b.mongodb.net/TodoApp?retryWrites=true&w=majority'
 
 mongodb.connect(connectionString, {useNewUrlParser: true, useUnifiedTopology: true}, function(err, client) {
   db = client.db()
@@ -55,7 +55,7 @@ db.collection('items').find().toArray(function(err, items) {
       <form id="create-form" action="/create-item" method="POST">
         <div class="d-flex align-items-center">
           <input id="create-field" name="item" autofocus autocomplete="off" class="form-control mr-3" type="text" style="flex: 1;">
-          <button class="btn btn-primary">Add New Item</button>
+          <button class="btn btn-primary">Añadir articulo</button>
         </div>
       </form>
     </div>
