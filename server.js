@@ -36,7 +36,7 @@ db.collection('items').find().toArray(function(err, items) {
 </head>
 <body>
   <div class="container">
-    <h1 class="display-4 text-center py-1">To-Do App!</h1>
+    <h1 class="display-4 text-center py-1">Que hace falta</h1>
     
     <div class="jumbotron p-3 shadow-sm">
       <form id="create-form" action="/create-item" method="POST">
@@ -48,19 +48,13 @@ db.collection('items').find().toArray(function(err, items) {
     </div>
     
     <ul id="item-list" class="list-group pb-5">
-    ${items.map(function(item) {
-      return `<li class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
-      <span class="item-text">${item.text}</span>
-      <div>
-        <button data-id="${item._id}" class="edit-me btn btn-secondary btn-sm mr-1">Editar</button>
-        <button data-id="${item._id}" class="delete-me btn btn-danger btn-sm">Borrar</button>
-      </div>
-    </li>`
-    }).join('')}         
+          
     </ul>
     
   </div>
-  
+  <script>
+  let items = ${JSON.stringify(items)}
+  </script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="/browser.js"></script>
 </body>
